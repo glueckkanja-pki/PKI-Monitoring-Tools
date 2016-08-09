@@ -9,6 +9,7 @@ A best practice for most tools is to set up a Scheduled Task for each monitored 
 
 ## Tools
 
+* **CheckWebCRL**: Downloads a CRL and checks how long it is still valid. If the validity is below a configurable threshold, a warning is written to stdout.
 * **CheckHttp**: Checks whether a web site is up and running (returns HTTP 200). Used to ensure availability of AIAs.
 * **CheckSSLCert**: Accesses an HTTPS URL and checks whether the SSL certificate is still valid. Warns *before* the SSL certificate expires.
 
@@ -22,7 +23,8 @@ All tools are available under the [AGPL](LICENSE).
 
 Some of the dependencies are additionally available under different licenses:
 * [log4net](https://logging.apache.org/log4net/) is available under the [Apache License, Version 2.0](https://logging.apache.org/log4net/license.html)
-* [SharpZipLib](https://icsharpcode.github.io/SharpZipLib/) is available under the GPL.
+* [SharpZipLib](https://icsharpcode.github.io/SharpZipLib/) is available under the [GPL](https://www.gnu.org/licenses/gpl-3.0.txt).
+* [NSSWrapper](https://github.com/glueckkanja-pki/NSSWrapper) is available under the [GPL](https://github.com/glueckkanja-pki/NSSWrapper/blob/master/gpl-3.0.md) as well as the [Mozilla Public License](https://github.com/glueckkanja-pki/NSSWrapper/blob/master/LICENSE).
 
 ## Contributing
 

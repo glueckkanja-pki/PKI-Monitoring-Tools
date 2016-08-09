@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckSSLCert", "CheckSSLCer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckHttp", "CheckHttp\CheckHttp.csproj", "{D364C17F-CD61-4BF8-8BBA-1D81A54B0C03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckWebCRL", "CheckWebCRL\CheckWebCRL.csproj", "{B80FB7DD-6DB3-4676-AA25-C5A73E86C5E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -21,6 +23,10 @@ Global
 		{D364C17F-CD61-4BF8-8BBA-1D81A54B0C03}.Debug|x86.Build.0 = Debug|x86
 		{D364C17F-CD61-4BF8-8BBA-1D81A54B0C03}.Release|x86.ActiveCfg = Release|x86
 		{D364C17F-CD61-4BF8-8BBA-1D81A54B0C03}.Release|x86.Build.0 = Release|x86
+		{B80FB7DD-6DB3-4676-AA25-C5A73E86C5E5}.Debug|x86.ActiveCfg = Debug|x86
+		{B80FB7DD-6DB3-4676-AA25-C5A73E86C5E5}.Debug|x86.Build.0 = Debug|x86
+		{B80FB7DD-6DB3-4676-AA25-C5A73E86C5E5}.Release|x86.ActiveCfg = Release|x86
+		{B80FB7DD-6DB3-4676-AA25-C5A73E86C5E5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
