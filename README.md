@@ -16,7 +16,7 @@ A best practice for most tools is to set up a Scheduled Task for each monitored 
 
 ### CertWarning ###
 
-This tool depends on certadm.dll included on Windows Servers with AD CS installed and probably also comes with some Admin packs. It must be registered (´regsvr32 certadm.dll´) in case it is not already.
+This tool depends on certadm.dll included on Windows Servers with AD CS installed and probably also comes with some Admin packs. It must be registered (`regsvr32 certadm.dll`) in case it is not already.
 
 CertWarning is more sophisticated than the other three tools and must be configured in the app.config file (or CertWarning.config in the compiled version), possibly additionally with an HTML mail template (body.html per default) and a mapping file (User2Group.txt by default).
 
