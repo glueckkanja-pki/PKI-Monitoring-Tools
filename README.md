@@ -12,6 +12,13 @@ A best practice for most tools is to set up a Scheduled Task for each monitored 
 * **CheckWebCRL**: Downloads a CRL and checks how long it is still valid. If the validity is below a configurable threshold, a warning is written to stdout.
 * **CheckHttp**: Checks whether a web site is up and running (returns HTTP 200). Used to ensure availability of AIAs.
 * **CheckSSLCert**: Accesses an HTTPS URL and checks whether the SSL certificate is still valid. Warns *before* the SSL certificate expires.
+* **CertWarning**: Queries Microsoft Active Directory Certificate Services for certificates that expire soon.
+
+### CertWarning ###
+
+This tool depends on certadm.dll included on Windows Servers with AD CS installed and probably also comes with some Admin packs. It must be registered (´regsvr32 certadm.dll´) in case it is not already.
+
+CertWarning is more sophisticated than the other three tools and must be configured in the app.config file (or CertWarning.config in the compiled version), possibly additionally with an HTML mail template (body.html per default) and a mapping file (User2Group.txt by default).
 
 ## Support
 
