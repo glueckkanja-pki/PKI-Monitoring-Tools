@@ -143,12 +143,12 @@ namespace GK.PKIMonitoring.CertWarning
                 //PrintString(logString, "CAConfigString: " + CAConfigString);
 
                 // get template names from ini file
-                string strTemplatename = Consts.GlobalSettings_TemplateName;// parser.GetSetting("GlobalSettings", "strTemplateName");
-                strTemplatename = strTemplatename.ToUpper();
-                strTemplatename = " " + strTemplatename + " ";
-                strTemplatename = strTemplatename.Replace(",", " , ");
-                log.Debug("strTemplatename: " + strTemplatename);
-                //PrintString(logString, "strTemplatename: " + strTemplatename);
+                string strConfiguredTemplateNames = Consts.GlobalSettings_TemplateName;// parser.GetSetting("GlobalSettings", "strTemplateName");
+                strConfiguredTemplateNames = strConfiguredTemplateNames.ToUpper();
+                strConfiguredTemplateNames = " " + strConfiguredTemplateNames + " ";
+                strConfiguredTemplateNames = strConfiguredTemplateNames.Replace(",", " , ");
+                log.Debug("strTemplatename: " + strConfiguredTemplateNames);
+                //PrintString(logString, "strConfiguredTemplateNames: " + strConfiguredTemplateNames);
 
                 // get send mail setting
                 bool activateWarningEMail = Consts.WarningMail_Activate;// bool.Parse(parser.GetSetting("GLOBALSETTINGS", "activateWarningEMail"));
@@ -162,7 +162,7 @@ namespace GK.PKIMonitoring.CertWarning
                 //PrintString(logString, "strLastRequestID: " + lastRequestID.ToString());// strLastRequestID);
 
                 // Get user mapping settings
-                string MappingFileName = "";
+                string MappingFileName = null;
                 bool activateUserMapping = Consts.GroupMapping_Activate;// bool.Parse(parser.GetSetting("GROUPMAPPING", "ACTIVATEUSERMAPPING"));
                 if (activateUserMapping == true)
                     MappingFileName = Consts.GroupMapping_Filename;// parser.GetSetting("GROUPMAPPING", "FILENAME");
@@ -378,7 +378,7 @@ namespace GK.PKIMonitoring.CertWarning
                                     templateName = cert.CertificateTemplate;
                                 }
                                 templateName = " " + templateName + " ";
-                                if (strTemplatename.Contains(templateName.ToUpper()))
+                                if (strConfiguredTemplateNames.Contains(templateName.ToUpper()))
                                 {
                                     //PrintString(logString, "");
                                     //PrintString(logString, "RequestID:" + cert.RequestId);
@@ -395,8 +395,6 @@ namespace GK.PKIMonitoring.CertWarning
                                     //log.Debug("Certificate Template: " + templateName.Trim());
                                     //log.Debug("Requester Name: " + cert.RequesterName);
 
-
-                                    cert.GroupName = "";
                                     // user mapping on or off
                                     if (activateUserMapping)
                                     { 
@@ -419,7 +417,8 @@ namespace GK.PKIMonitoring.CertWarning
                                     log.Warn(cert);
 
                                     // send warning email if activated
-                                    if (activateWarningEMail) sendWarning.SendWarningEMail(cert, templateName, CAConfigString);
+                                    if (activateWarningEMail)
+                                        sendWarning.SendWarningEMail(cert, templateName, CAConfigString);
                                     
                                     // save largest request id to ini file
                                     if (long.Parse(cert.RequestId) > largestRequestID)
@@ -436,8 +435,6 @@ namespace GK.PKIMonitoring.CertWarning
                     }
                 }
 
-                //PrintString(logString, "- Summary -");
-                //PrintString(logString, "Processed certificate rows: " + processedRowsCount.ToString());
                 log.Info( "- Summary -\n" +
                             "Processed certificate rows: " + processedRowsCount.ToString());
                 if (largestRequestID != 0)
@@ -457,43 +454,22 @@ namespace GK.PKIMonitoring.CertWarning
             catch (Exception excep)
             {
                 log.Fatal(excep);
-
-                ////Exception Handling
-                //WriteEventLog(excep.ToString());
-                //PrintString(logString, excep.ToString());
+                throw;
             }
             finally
+            {
+                try
                 {
-                    //// Close log file
-                    //logString.Close();
-
                     // call send warning mail constructor
-                    SendSummary sendSummary = new SendSummary();//INIFileName);
+                    SendSummary sendSummary = new SendSummary();
                     sendSummary.SendReportEMail();
                 }
-
+                catch (Exception excep)
+                {
+                    log.Fatal(excep);
+                    throw;
+                }
+            }
         }
-
-
-        //// print result and log to file
-        //private static void PrintString(LogString logString, string OutputString)
-        //{
-        //    Console.WriteLine(OutputString);
-        //    logString.WriteString(OutputString);
-        //}
-        
-        //// write to eventlog
-        //private static void WriteEventLog(string sEvent)
-        //{
-        //    string sSource;
-        //    string sLog;
-            
-        //    sSource = "CertWarning";
-        //    sLog = "Application";
-            
-        //    if (!EventLog.SourceExists(sSource))
-        //        EventLog.CreateEventSource(sSource, sLog);
-        //    EventLog.WriteEntry(sSource, sEvent, EventLogEntryType.Error, 1);
-        //}
     }
 }
