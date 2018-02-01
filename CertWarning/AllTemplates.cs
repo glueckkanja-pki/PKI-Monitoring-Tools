@@ -3,18 +3,18 @@ using System.DirectoryServices;
 
 namespace GK.PKIMonitoring.CertWarning
 {
-    public class AllTemplates
+    public static class AllTemplates
     {
-        private struct TemplateStruct
+        public struct TemplateStruct
         {
             public string strOID;
             public string strName;
             public string strDisplayName;
         }
 
-        private TemplateStruct[] allSubTemplates;
+        public static TemplateStruct[] allSubTemplates { get; private set; }
 
-        public string OID2Name(string sOID)
+        public static string OID2Name(string sOID)
         {
             string sName;
 
@@ -29,27 +29,40 @@ namespace GK.PKIMonitoring.CertWarning
             return "Error no Template found.";
         }
 
-        // search template name to OID
-        public bool GetAllTemplates(DirectoryEntry templatesEntry)
+        public static void GetAllTemplates()
+        {
+            GetAllTemplates(string.Empty); 
+        }
+
+        /// <summary>
+        /// search template names and corresponding OIDs
+        /// </summary>
+        public static void GetAllTemplates(string strDCName)
+        {
+            string ldapURIPrefix = "LDAP://" + (string.IsNullOrEmpty(strDCName) ? string.Empty : strDCName + "/");
+
+            using (DirectoryEntry rootEntry = new DirectoryEntry(ldapURIPrefix + "rootDSE"))
+            using (DirectoryEntry templatesEntry = new DirectoryEntry(ldapURIPrefix + "cn = certificate templates,cn=public key services,cn=services,cn=configuration," + (string)rootEntry.Properties["defaultNamingContext"][0]))
+                GetAllTemplates(templatesEntry);
+        }
+
+        private static void GetAllTemplates(DirectoryEntry templatesEntry)
         {
             // Variables
-            DirectorySearcher searcher = null;
             SearchResultCollection resultCollection = null;
             int i = 0;
             int TemplateCount;
             
-
-            try
+            // Look for the Display Name of a template OID in AD
+            using (DirectorySearcher searcher = new DirectorySearcher(templatesEntry))
             {
-                // Look for the Display Name of a template OID in AD
-                searcher = new DirectorySearcher(templatesEntry);
                 searcher.Filter = "(&(msPKI-Cert-Template-OID=*))";
                 resultCollection = searcher.FindAll();
 
                 // create array of template struct
                 TemplateCount = resultCollection.Count;
                 allSubTemplates = new TemplateStruct[TemplateCount];
-                
+
                 // fill up the array
                 foreach (SearchResult result in resultCollection)
                 {
@@ -57,20 +70,6 @@ namespace GK.PKIMonitoring.CertWarning
                     allSubTemplates[i].strName = (string)result.Properties["Name"][0];
                     allSubTemplates[i].strDisplayName = (string)result.Properties["displayName"][0];
                     i = ++i;
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-            finally
-            {
-                // Clean up
-                if (searcher != null)
-                {
-                    searcher.Dispose();
                 }
             }
         }

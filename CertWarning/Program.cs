@@ -48,8 +48,6 @@ namespace GK.PKIMonitoring.CertWarning
                 // call send warning mail constructor
                 SendWarning sendWarning = new SendWarning();
 
-                // 
-                AllTemplates allTemplates = new AllTemplates();
                 string templateName;
 
                 int iColumnCount = 0;
@@ -97,31 +95,11 @@ namespace GK.PKIMonitoring.CertWarning
 
                 try
                 {
-                    // Get AD entry that we will use to translate a certificate template OID to its correspondent name
-                    rootEntry = new DirectoryEntry("LDAP://" + strDCName + "/rootDSE");
-                    templatesEntry = new DirectoryEntry("LDAP://" + strDCName + "/cn=certificate templates,cn=public key services,cn=services,cn=configuration," + (string)rootEntry.Properties["defaultNamingContext"][0]);
-
-                    if (allTemplates.GetAllTemplates(templatesEntry) == false)
-                    {
-                        log.Error("Error enumerating templates.");
-//                        PrintString(logString, "Error enumerate templates.");
-                        return;
-                    }
+                    AllTemplates.GetAllTemplates();
                 }
                 catch (Exception ex)
                 {
-                    // Errors?
-                    log.Error(ex);
-                    //PrintString(logString, ex.Message);
-                    // Clean up
-                    if (rootEntry != null)
-                    {
-                        rootEntry.Dispose();
-                    }
-                    if (templatesEntry != null)
-                    {
-                        templatesEntry.Dispose();
-                    }
+                    log.Error("Error enumerating templates", ex);
                     return;
                 }
 
@@ -371,7 +349,7 @@ namespace GK.PKIMonitoring.CertWarning
                             {
                                 if (cert.CertificateTemplate.Contains("1.3.6.1.4.1"))
                                 {
-                                    templateName = allTemplates.OID2Name(cert.CertificateTemplate);
+                                    templateName = AllTemplates.OID2Name(cert.CertificateTemplate);
                                 }
                                 else
                                 {
